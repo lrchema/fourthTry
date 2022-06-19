@@ -1,3 +1,4 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -22,7 +23,7 @@ const config = {
   measurementId: "G-TFK8CY112W"
 };
 
-firebase.initializeApp(config);
+export const app = initializeApp(config);
 
 
 

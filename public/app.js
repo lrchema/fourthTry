@@ -1,3 +1,15 @@
+import { app } from "./config.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+} from "https://www.gstatic.com/firebasejs/9.8.2/firebase-firestore.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/9.8.2/firebase-auth.js";
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -19,6 +31,7 @@
 /**
  * @return {!Object} The FirebaseUI config.
  */
+
 function getUiConfig() {
   return {
     callbacks: {
@@ -91,10 +104,11 @@ function getUiConfig() {
 }
 
 // Initialize the FirebaseUI Widget using Firebase.
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
+const auth = getAuth(app);
+var ui = new firebaseui.auth.AuthUI(auth);
 // Disable auto-sign in.
 ui.disableAutoSignIn();
-const db = firebase.firestore();
+const db = getFirestore(app);
 
 /**
  * @return {string} The URL of the FirebaseUI standalone widget.
@@ -130,7 +144,7 @@ var signInWithPopup = function () {
  * Displays the UI for a signed in user.
  * @param {!firebase.User} user
  */
-var handleSignedInUser = function (user) {
+var handleSignedInUser = async function (user) {
   console.log("try111: inside handleSignedInUser");
 
   document.getElementById("user-signed-in").style.display = "block";
@@ -142,22 +156,17 @@ var handleSignedInUser = function (user) {
     // console.log("hello1");
     handleUserAnswer();
   });
-  var docRef2 = db.collection("userAnswers").doc(user.uid);
-  docRef2
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        document.getElementById("prevAns").textContent =
-          user.displayName + "'s favourite colour:" + doc.data()["answer"];
-        console.log(user.displayName + "'s favourite colour:", doc.data());
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No favourite colour!");
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting favourite colour:", error);
-    });
+
+  var docRef2 = doc(db, "userAnswers", user.uid);
+  docSnap2 = await getDoc(docRef2);
+  if (docSnap2.exists()) {
+    document.getElementById("prevAns").textContent =
+      user.displayName + "'s favourite colour:" + docSnap2.data()["answer"];
+    console.log(user.displayName + "'s favourite colour:", docSnap2.data());
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No favourite colour!");
+  }
 
   if (user.photoURL) {
     var photoURL = user.photoURL;
@@ -189,7 +198,7 @@ var handleSignedOutUser = function () {
 
 // Listen to change in auth state so it displays the correct UI for when
 // the user is signed in or not.
-firebase.auth().onAuthStateChanged(function (user) {
+onAuthStateChanged(auth, function (user) {
   document.getElementById("check-this").addEventListener("click", function () {
     var userDispName = user ? user.displayName : "Unknown User";
     console.log(userDispName + " clicked!");
@@ -207,24 +216,18 @@ firebase.auth().onAuthStateChanged(function (user) {
  * Deletes the user's account.
  */
 var deleteAccount = function () {
-  firebase
-    .auth()
-    .currentUser.delete()
-    .catch(function (error) {
-      if (error.code == "auth/requires-recent-login") {
-        // The user's credential is too old. She needs to sign in again.
-        firebase
-          .auth()
-          .signOut()
-          .then(function () {
-            // The timeout allows the message to be displayed after the UI has
-            // changed to the signed out state.
-            setTimeout(function () {
-              alert("Please sign in again to delete your account.");
-            }, 1);
-          });
-      }
-    });
+  auth.currentUser.delete().catch(function (error) {
+    if (error.code == "auth/requires-recent-login") {
+      // The user's credential is too old. She needs to sign in again.
+      signOut(auth).then(function () {
+        // The timeout allows the message to be displayed after the UI has
+        // changed to the signed out state.
+        setTimeout(function () {
+          alert("Please sign in again to delete your account.");
+        }, 1);
+      });
+    }
+  });
 };
 
 var handleUserAnswer = function () {
@@ -232,21 +235,16 @@ var handleUserAnswer = function () {
     ? document.getElementById("colour").value
     : "None";
   console.log("ans: ", ans);
-  const x = db.collection("userAnswers").doc("test").get();
-  db
-    .collection("userAnswers")
-    .doc(firebase.auth().currentUser.uid)
-    .set(
-      {
-        answer: ans,
-      },
-      { merge: true }
-    )
+  // Check This
+  // const x = db.collection("userAnswers").doc("test").get();
+  setDoc(doc(db, "userAnswers", auth.currentUser.uid), {
+    answer: ans,
+  })
     .then(() => {
-      console.log("favourite colour stored!");
+      console.log("favourite colour stored!woooooooooooo");
     })
     .catch((error) => {
-      console.error("Error writing document: ", error);
+      console.error("Error writing document: i love bugs", error);
     });
 };
 /**
