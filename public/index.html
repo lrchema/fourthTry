@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>FirebaseUI Auth Demo</title>
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json" />
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore-compat.js"></script>
@@ -11,8 +11,18 @@
     <script src="common.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css" media="screen" />
     <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      function mySubmitFunction(event) {
+        event.preventDefault();
+        return false;
+      }
+    </script>
   </head>
   <body>
     <div id="container">
@@ -23,7 +33,7 @@
           <div id="user-signed-in" class="hidden">
             <div id="user-info">
               <div id="photo-container">
-                <img id="photo">
+                <img id="photo" />
               </div>
               <div id="name"></div>
               <div id="email"></div>
@@ -31,12 +41,11 @@
               <div id="is-new-user"></div>
               <div class="clearfix"></div>
             </div>
-            <div id='prevAns'></div>
-            <form id='favColour' method="POST">
+            <div id="prevAns"></div>
+            <form id="favColour" method="POST">
               <label>What is your favourite colour?</label>
-              <input id="colour" type='text'/>
-              <button id="send-colour">Submit</button>
-
+              <input id="colour" type="text" />
+              <button type="button" id="send-colour" onsubmit="return mySubmitFunction()">Submit</button>
             </form>
             <p>
               <button id="sign-out">Sign Out</button>
@@ -50,28 +59,58 @@
               <legend>Configuration</legend>
               reCAPTCHA mode for Phone Auth:
               <label for="recaptcha-normal">
-                <input type="radio" id="recaptcha-normal" name="recaptcha" value="normal">
+                <input
+                  type="radio"
+                  id="recaptcha-normal"
+                  name="recaptcha"
+                  value="normal"
+                />
                 Normal
               </label>
               <label for="recaptcha-invisible">
-                <input type="radio" id="recaptcha-invisible" name="recaptcha" value="invisible">
-                Invisible
-              </label><br>
+                <input
+                  type="radio"
+                  id="recaptcha-invisible"
+                  name="recaptcha"
+                  value="invisible"
+                />
+                Invisible </label
+              ><br />
               Email signInMethod:
               <label for="email-signInMethod-password">
-                <input type="radio" id="email-signInMethod-password" name="emailSignInMethod"
-                       value="password">
+                <input
+                  type="radio"
+                  id="email-signInMethod-password"
+                  name="emailSignInMethod"
+                  value="password"
+                />
                 Password
               </label>
               <label for="email-signInMethod-emailLink">
-                <input type="radio" id="email-signInMethod-emailLink" name="emailSignInMethod"
-                       value="emailLink">
-                Email Link
-              </label><br>
-              <label for="email-disableSignUp-status">Disable email sign up:</label>
-              <input type="checkbox" id="email-disableSignUp-status" name="disableEmailSignUpStatus">
-              <label for="admin-restricted-operation-status">Admin restricted operation status:</label>
-              <input type="checkbox" id="admin-restricted-operation-status" name="adminRestrictedOperationStatus">
+                <input
+                  type="radio"
+                  id="email-signInMethod-emailLink"
+                  name="emailSignInMethod"
+                  value="emailLink"
+                />
+                Email Link </label
+              ><br />
+              <label for="email-disableSignUp-status"
+                >Disable email sign up:</label
+              >
+              <input
+                type="checkbox"
+                id="email-disableSignUp-status"
+                name="disableEmailSignUpStatus"
+              />
+              <label for="admin-restricted-operation-status"
+                >Admin restricted operation status:</label
+              >
+              <input
+                type="checkbox"
+                id="admin-restricted-operation-status"
+                name="adminRestrictedOperationStatus"
+              />
             </fieldset>
             <p>
               <button id="sign-in-with-redirect">Sign In with Redirect</button>
